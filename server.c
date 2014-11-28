@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <errno.h>
+#include "server.h"
 
 int main(int argc, char *argv[]) {
     int portNum;
@@ -70,7 +71,7 @@ void *connectionHandler(void *incomingConnection) {
     char * messagePart;
     char ** messagePartsPtr;
 
-    readSize = recv(incomingConnection, readBuffer, READ_SIZE, 0);
+    readSize = recv((int)incomingConnection, readBuffer, READ_SIZE, 0);
     // "OPEN filename\n", "READ", "WRITE", "CLOSE"
     if (readBuffer[readSize] != '\n'){ //malformed request
         text = "Error, malformed request!";
@@ -81,7 +82,7 @@ void *connectionHandler(void *incomingConnection) {
         close (incomingConnection);
         return;
     }
-    messagePart = strtok (readBuffer, " ",messagePartsPtr);
+    messagePart = strtok_r(readBuffer, " ",messagePartsPtr);
     switch(messagePart){
         /* case "OPEN":
         //stuff

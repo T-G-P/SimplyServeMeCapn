@@ -83,24 +83,30 @@ void *connectionHandler(void *incomingConnection) {
         return;
     }
     messagePart = strtok_r(readBuffer, " ",messagePartsPtr);
-    switch(messagePart){
-        /* case "OPEN":
-        //stuff
-        break;
-        case "READ":
-        break;
-        case "WRITE":
-        break;
-        case "CLOSE":
-        break;
-        */
-        default:
-            text = "Error, unknown command!";
-            length = strlen (text) + 1;
-            write (incomingConnection, &length, sizeof (length));
-            /* Write the string. */
-            write (incomingConnection, text, length);
-            close (incomingConnection);
-            return;
+    //switch(messagePart){
+    //    /* case "OPEN":
+    //    //stuff
+    //    break;
+    //    case "READ":
+    //    break;
+    //    case "WRITE":
+    //    break;
+    //    case "CLOSE":
+    //    break;
+    //    */
+    //    default:
+    if (strcmp(messagePart, "OPEN") == 0){
+          // do something
+          return;
     }
+    else{
+        text = "Error, unknown command!";
+        length = strlen (text) + 1;
+        write (incomingConnection, &length, sizeof (length));
+        /* Write the string. */
+        write (incomingConnection, text, length);
+        close (incomingConnection);
+        return;
+    }
+
 }

@@ -10,18 +10,18 @@
 
 int main(int argc, char *argv[]) {
     int portNum;
-    char* baseDir;
-    if (argc != 5){
+    char *baseDir;
+    if (argc != 5) {
         printf("Invalid # of arguments\n");
         return 1;
     }
     int i;
     for (i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-port") == 0) {
-            portNum = atoi(argv[i+1]);
+            portNum = atoi(argv[i + 1]);
             i++;
         } else if (strcmp(argv[i], "-mount") == 0) {
-            baseDir = argv[i+1];
+            baseDir = argv[i + 1];
             i++;
         } else {
             printf("unknown flag %s\n", argv[i]);
@@ -67,23 +67,24 @@ const READ_SIZE = 2048;
 void *connectionHandler(void *incomingConnection) {
     int readSize;
     char readBuffer[READ_SIZE];
-    const char* text;
+    const char *text;
     int length;
-    char * messagePart;
-    char ** messagePartsPtr;
+    char *messagePart;
+    char **messagePartsPtr;
 
     readSize = recv((long)incomingConnection, readBuffer, READ_SIZE, 0);
     // "OPEN filename\n", "READ", "WRITE", "CLOSE"
-    if (readBuffer[readSize] != '\n'){ //malformed request
+    if (readBuffer[readSize] != '\n') { //malformed request
         text = "Error, malformed request!";
         length = strlen (text) + 1;
         write (incomingConnection, &length, sizeof (length));
         /* Write the string. */
         write (incomingConnection, text, length);
         close (incomingConnection);
+        printf("Malformed request: '%s'\n", readBuffer);
         return;
     }
-    messagePart = strtok_r(readBuffer, " ",messagePartsPtr);
+    messagePart = strtok_r(readBuffer, " ", messagePartsPtr);
     //switch(messagePart){
     //    /* case "OPEN":
     //    //stuff
@@ -96,11 +97,12 @@ void *connectionHandler(void *incomingConnection) {
     //    break;
     //    */
     //    default:
-    if (strcmp(messagePart, "OPEN") == 0){
-          // do something
-          return;
-    }
-    else{
+    // if (strcmp(messagePart, "OPEN") == 0){
+    //       // do something
+    //     FILE
+    //     return;
+    // }
+    // else{
         text = "Error, unknown command: ";
         length = strlen (text) + 1;
         write (incomingConnection, &length, sizeof (length));
@@ -108,6 +110,6 @@ void *connectionHandler(void *incomingConnection) {
         write (incomingConnection, text, length);
         close (incomingConnection);
         return;
-    }
+    // }
 
 }

@@ -1,6 +1,13 @@
 #ifndef client_lib_H
 #define client_lib_H
 
+struct fileStat{
+    int fileSize;
+    int creationTime;
+    int accessTime;
+    int modificationTime;
+};
+
 void setServer (char* serverIP, int port);
 
 int openFile (char* name);
@@ -13,6 +20,6 @@ int statFile (int fd, struct fileStat *buf);
 
 int closeFile (int fd);
 
-void connectToServer(void);
+int connectToServer(void);
 
 #endif

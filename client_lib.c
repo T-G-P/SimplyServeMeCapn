@@ -13,13 +13,13 @@ int givenPort;
 struct sockaddr_in serverAddress;
 
 int connectToServer() {
-    int socket;
-    socket = socket(AF_INET, SOCK_STREAM, 0);
+    int connectSocket;
+    connectSocket = socket(AF_INET, SOCK_STREAM, 0);
     bzero (&serverAddress, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = givenServerIP; // 0.0.0.0
     serverAddress.sin_port = htons(givenPort);
-    return connect(socket, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+    return connect(connectSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     //while (fgets(sendline, 10000, stdin) != NULL) {
 
     //fputs(recvline, stdout);

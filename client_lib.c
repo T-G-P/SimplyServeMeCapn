@@ -6,7 +6,7 @@
 #include <string.h>
 #include <errno.h>
 #include "client.h"
-#include "client-lib.h"
+#include "client_lib.h"
 
 char* givenServerIP;
 int givenPort;

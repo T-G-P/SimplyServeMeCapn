@@ -1,5 +1,5 @@
-#ifndef client-lib_H
-#define client-lib_H
+#ifndef client_lib_H
+#define client_lib_H
 
 void setServer (char* serverIP, int port);
 

@@ -7,6 +7,7 @@
 #include <errno.h>
 #include "server.h"
 
+
 int main(int argc, char *argv[]) {
     int portNum;
     char* baseDir;
@@ -71,7 +72,7 @@ void *connectionHandler(void *incomingConnection) {
     char * messagePart;
     char ** messagePartsPtr;
 
-    readSize = recv((int)incomingConnection, readBuffer, READ_SIZE, 0);
+    readSize = recv((long)incomingConnection, readBuffer, READ_SIZE, 0);
     // "OPEN filename\n", "READ", "WRITE", "CLOSE"
     if (readBuffer[readSize] != '\n'){ //malformed request
         text = "Error, malformed request!";
@@ -100,7 +101,7 @@ void *connectionHandler(void *incomingConnection) {
           return;
     }
     else{
-        text = "Error, unknown command!";
+        text = "Error, unknown command: ";
         length = strlen (text) + 1;
         write (incomingConnection, &length, sizeof (length));
         /* Write the string. */

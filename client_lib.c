@@ -21,7 +21,7 @@ struct sockaddr_in serverAddress;
 int connectToServer() {
     int connectSocket;
     connectSocket = socket(AF_INET, SOCK_STREAM, 0);
-    bzero (&serverAddress, sizeof(serverAddress));
+    bzero(&serverAddress, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = resolve(givenServerIP);
     printf("ip: %d\n", serverAddress.sin_addr.s_addr);
@@ -80,7 +80,7 @@ int openFile(char *name) {
     puts("connected");
 
     sprintf(message, "OPEN %s\n", name);
-    sendto (socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+    sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     printf("->%s", message);
 
     num_bytes = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);

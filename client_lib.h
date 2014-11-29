@@ -8,17 +8,17 @@ struct fileStat {
     int modificationTime;
 };
 
-void setServer (char *serverIP, int port);
+void setServer(char *serverIP, int port);
 
-int openFile (char *name);
+int openFile(char *name);
 
-int readFile (int fd, void *buf);
+int readFile(int fd, void *buf);
 
-int writeFile (int fd, void *buf);
+int writeFile(int fd, void *buf);
 
-int statFile (int fd, struct fileStat *buf);
+int statFile(int fd, struct fileStat *buf);
 
-int closeFile (int fd);
+int closeFile(int fd);
 
 int connectToServer(void);
 

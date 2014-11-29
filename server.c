@@ -37,12 +37,12 @@ int main(int argc, char *argv[]) {
     ownAddress.sin_addr.s_addr = INADDR_ANY; // 0.0.0.0
     ownAddress.sin_port = htons(portNum);
 
-    if (bind (listenSocket, (struct sockaddr *)&ownAddress, sizeof(ownAddress)) < 0) {
+    if (bind(listenSocket, (struct sockaddr *)&ownAddress, sizeof(ownAddress)) < 0) {
         perror("Couldn't open listening socket");
         return 1;
     }
 
-    listen (listenSocket, 256);
+    listen(listenSocket, 256);
 
     pthread_t threadId;
     int incomingConnection;
@@ -65,6 +65,8 @@ int main(int argc, char *argv[]) {
 const READ_SIZE = 2048;
 
 void *connectionHandler(void *incomingConnection) {
+    int socketFd = *((int *) incomingConnection);
+    printf("socket fd: %d\n", socketFd);
     int readSize;
     char readBuffer[READ_SIZE];
     const char *text;
@@ -72,15 +74,14 @@ void *connectionHandler(void *incomingConnection) {
     char *messagePart;
     char **messagePartsPtr;
 
-    readSize = recv((long)incomingConnection, readBuffer, READ_SIZE, 0);
+    readSize = recv(socketFd, readBuffer, READ_SIZE, 0);
+    printf("Number of bytes for message: %d\n", readSize);
     // "OPEN filename\n", "READ", "WRITE", "CLOSE"
     if (readBuffer[readSize] != '\n') { //malformed request
         text = "Error, malformed request!";
-        length = strlen (text) + 1;
-        write (incomingConnection, &length, sizeof (length));
         /* Write the string. */
-        write (incomingConnection, text, length);
-        close (incomingConnection);
+        write(socketFd, text, strlen(text));
+        close(socketFd);
         printf("Malformed request: '%s'\n", readBuffer);
         return;
     }
@@ -103,13 +104,11 @@ void *connectionHandler(void *incomingConnection) {
     //     return;
     // }
     // else{
-        text = "Error, unknown command: ";
-        length = strlen (text) + 1;
-        write (incomingConnection, &length, sizeof (length));
-        /* Write the string. */
-        write (incomingConnection, text, length);
-        close (incomingConnection);
-        return;
+    text = "Error, unknown command: ";
+    /* Write the string. */
+    write(socketFd, text, strlen(text));
+    close(socketFd);
+    return;
     // }
 
 }

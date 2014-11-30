@@ -77,7 +77,7 @@ void *connectionHandler(void *incomingConnection) {
     readSize = recv(socketFd, readBuffer, READ_SIZE, 0);
     printf("Number of bytes for message: %d\n", readSize);
     // "OPEN filename\n", "READ", "WRITE", "CLOSE"
-    if (readBuffer[readSize] != '\n') { //malformed request
+    if (strcmp(readBuffer[readSize - 1], "\n") != 0) { //malformed request
         text = "Error, malformed request!";
         /* Write the string. */
         write(socketFd, text, strlen(text));

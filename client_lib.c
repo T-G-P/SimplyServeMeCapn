@@ -17,6 +17,66 @@
 char *givenServerIP;
 int givenPort;
 struct sockaddr_in serverAddress;
+//struct fileStat *fileStats[1];
+
+struct fileNode{
+    int fd;
+    char *fileName;
+    struct fileStat *next;
+};
+
+struct fileNode *headNode = NULL;
+struct fileNode *tailNode = NULL;
+
+struct fileNode *createNode(int fd, char*fileName){
+    struct fileNode *llNode = malloc(sizeof(struct fileNode));
+    llNode->fd = fd;
+    llNode->fileName = fileName;
+    llNode->next = NULL;
+
+    if (headNode == NULL) {
+        headNode = llNode;
+    }
+
+    if (tailNode != NULL) {
+        tailNode->next = llNode;
+    }
+
+    tailNode = llNode;
+
+    return llNode;
+}
+
+int deleteNode(int fd){
+    struct fileNode *ptr;
+    struct fileNode *prev = NULL;;
+    for (ptr = headNode; ptr != NULL; ptr = ptr->next){
+        if (ptr->fd == fd){
+            if (prev != NULL){
+                prev->next = ptr->next;
+            }
+            free(ptr->fd);
+            free(ptr->fileName);
+            free(ptr->next);
+            free(ptr);
+            return;
+        }
+        prev = ptr;
+    }
+    printf("Invalid file descriptor: %d\n",fd);
+    exit(1);
+}
+
+struct *fileNode findFileNode (int fd){
+    struct *fileNode ptr;
+    for (ptr = headNode; ptr != NULL; ptr = ptr->next){
+        if (ptr->fd == fd){
+            return ptr;
+        }
+    }
+    printf("Invalid file descriptor entered\n");
+    exit(1);
+}
 
 int connectToServer() {
     int connectSocket;
@@ -104,6 +164,10 @@ int openFile(char *name) {
 }
 
 int readFile(int fd, void *buf) {
+    /*
+     * Attempt store adthewholefilefromfiledescriptor fd into the buffer starting at buf. On success, the number of bytes read is returned and -1 otherwise. You can assume file size will be less than 1KB.
+     * */
+
 
 }
 

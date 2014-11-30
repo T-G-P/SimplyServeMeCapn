@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
     }
     setServer(hostName, portNum);
     openFile("file.in");
+    //openFile("/etc/shadow");
 
 }
 

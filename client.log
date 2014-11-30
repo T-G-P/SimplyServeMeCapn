@@ -1,0 +1,18 @@
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->OPEN os-release
+<-Permission denied
+closed
+Malformed response
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->READ -1
+bytes read: 19
+<-'Bad file descriptor'
+closed

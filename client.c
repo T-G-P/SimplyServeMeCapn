@@ -42,7 +42,10 @@ int main(int argc, char **argv) {
         }
     }
     setServer(hostName, portNum);
-    openFile("file.in");
+    int fd = openFile(".zshrc");
+    // printf("got file descriptor: %d\n", fd);
+    char *buf[2000];
+    readFile(fd, buf);
     //openFile("/etc/shadow");
 
 }

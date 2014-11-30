@@ -17,66 +17,6 @@
 char *givenServerIP;
 int givenPort;
 struct sockaddr_in serverAddress;
-//struct fileStat *fileStats[1];
-
-struct fileNode{
-    int fd;
-    char *fileName;
-    struct fileStat *next;
-};
-
-struct fileNode *headNode = NULL;
-struct fileNode *tailNode = NULL;
-
-struct fileNode *createNode(int fd, char*fileName){
-    struct fileNode *llNode = malloc(sizeof(struct fileNode));
-    llNode->fd = fd;
-    llNode->fileName = fileName;
-    llNode->next = NULL;
-
-    if (headNode == NULL) {
-        headNode = llNode;
-    }
-
-    if (tailNode != NULL) {
-        tailNode->next = llNode;
-    }
-
-    tailNode = llNode;
-
-    return llNode;
-}
-
-int deleteNode(int fd){
-    struct fileNode *ptr;
-    struct fileNode *prev = NULL;;
-    for (ptr = headNode; ptr != NULL; ptr = ptr->next){
-        if (ptr->fd == fd){
-            if (prev != NULL){
-                prev->next = ptr->next;
-            }
-            free(ptr->fd);
-            free(ptr->fileName);
-            free(ptr->next);
-            free(ptr);
-            return;
-        }
-        prev = ptr;
-    }
-    printf("Invalid file descriptor: %d\n",fd);
-    exit(1);
-}
-
-struct *fileNode findFileNode (int fd){
-    struct *fileNode ptr;
-    for (ptr = headNode; ptr != NULL; ptr = ptr->next){
-        if (ptr->fd == fd){
-            return ptr;
-        }
-    }
-    printf("Invalid file descriptor entered\n");
-    exit(1);
-}
 
 int connectToServer() {
     int connectSocket;
@@ -109,10 +49,10 @@ int ip2long(char *addressString) {
 int resolve(char *addressString) {
     int longip = ip2long(addressString);
     if (longip != INADDR_NONE) {
-        printf("ip2long success\n");
+        puts("ip2long success");
         return longip;
     }
-    printf("resolving hostname\n");
+    puts("resolving hostname");
     struct hostent *host = gethostbyname(addressString);
     // puts(host->h_name);
     // char* asdf = *host->h_addr_list[0];
@@ -131,6 +71,7 @@ int openFile(char *name) {
     char message[1000];
     int num_bytes;
     int socketDescriptor;
+    int fd;
 
     socketDescriptor = connectToServer();
     if (socketDescriptor == -1) {
@@ -139,9 +80,9 @@ int openFile(char *name) {
 
     puts("connected");
 
-    sprintf(message, "OPEN %s\n", name);
+    sprintf(message, "OPEN %s", name);
     sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
-    printf("->%s", message);
+    printf("->%s\n", message);
 
     num_bytes = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
     recvline[num_bytes] = 0;
@@ -151,27 +92,106 @@ int openFile(char *name) {
     close(socketDescriptor);
     puts("closed");
 
-    if (strcmp(recvline, "OK") == 0) {
-        return shm_open(name, O_RDWR | O_CREAT, 0600);
+    if (strncmp(recvline, "OK", 2) == 0) {
+        char *fdString = recvline + 3;
+        fd = atof(fdString);
+        return fd;
     } else if (strcmp(strtok(recvline, " "), "Error") == 0) {
         printf("%s\n", recvline);
         return -1;
     } else {
-        puts("Malformed response\n");
+        puts("Malformed response");
         return -1;
     }
-
 }
 
 int readFile(int fd, void *buf) {
-    /*
-     * Attempt store adthewholefilefromfiledescriptor fd into the buffer starting at buf. On success, the number of bytes read is returned and -1 otherwise. You can assume file size will be less than 1KB.
-     * */
+    // Attempt store adthewholefilefromfiledescriptor fd into the buffer starting at buf. On success, the number of bytes read
+    // is returned and -1 otherwise. You can assume file size will be less than 1KB.
+    char recvline[1000];
+    bzero(recvline, 1000);
+    char message[1000];
+    // int num_bytes;
+    int socketDescriptor;
 
+    socketDescriptor = connectToServer();
+    if (socketDescriptor == -1) {
+        return -1;
+    }
 
+    puts("connected");
+
+    sprintf(message, "READ %d", fd);
+    
+    sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+    printf("->%s\n", message);
+
+    int bytesRead = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    if (bytesRead < 0) {
+        perror("Failed to read from socket");
+        exit(1);
+    }
+    if (bytesRead == 0) {
+        puts("got a zero length read, weird");
+        return -1;
+    }
+    printf("bytes read: %d\n", bytesRead);
+    // num_bytes = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    // recvline[num_bytes] = 0;
+
+    printf("<-'%s'\n", recvline);
+
+    close(socketDescriptor);
+    puts("closed");
+
+    char *filedata;
+    // protocol: "OK ...filedata..."
+    if (strncmp(recvline, "OK", 2) == 0) {
+        // ok
+        filedata = recvline + 3;
+        strcpy(buf, filedata);
+        //replace with bytes read
+        return bytesRead - 3;
+    } else {
+        // error
+        return -1;
+    }
 }
 
 int writeFile(int fd, void *buf) {
+    char recvline[1000];
+    bzero(recvline, 1000);
+    char message[1000];
+    int socketDescriptor;
+
+    socketDescriptor = connectToServer();
+    if (socketDescriptor == -1) {
+        return -1;
+    }
+    puts("connected");
+
+    sprintf(message, "WRITE %d", fd);
+    
+    sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+    printf("->%s\n", message);
+
+    int bytesRead = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    if (bytesRead < 0) {
+        perror("Failed to read from socket");
+        exit(1);
+    }
+    if (bytesRead == 0) {
+        puts("got a zero length read, weird");
+        return -1;
+    }
+    printf("bytes read: %d\n", bytesRead);
+    // num_bytes = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    // recvline[num_bytes] = 0;
+
+    printf("<-'%s'\n", recvline);
+
+    close(socketDescriptor);
+    puts("closed");
 
 }
 

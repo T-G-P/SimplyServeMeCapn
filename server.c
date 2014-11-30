@@ -73,7 +73,7 @@ void *connectionHandler(void *incomingConnection) {
     char *text;
     int length;
     char *messagePart;
-    char **messagePartsPtr;
+    char *messagePartsPtr;
 
     readSize = recv(socketFd, readBuffer, READ_SIZE, 0);
     printf("Number of bytes for message: %d\n", readSize);
@@ -88,7 +88,9 @@ void *connectionHandler(void *incomingConnection) {
         return;
     }
     puts("wat");
-    messagePart = strtok_r(readBuffer, " ", messagePartsPtr);
+    printf("%s\n",readBuffer);
+    messagePart = strtok_r(readBuffer, " ", &messagePartsPtr);
+    printf("Message part: %s\n",messagePart);
     puts("ok");
     //switch(messagePart){
     //    /* case "OPEN":
@@ -105,14 +107,14 @@ void *connectionHandler(void *incomingConnection) {
     if (strcmp(messagePart, "OPEN") == 0){
         FILE *fp;
         puts("hi");
-        char *fileName = strtok_r(NULL,messagePart,messagePartsPtr);
+        char *fileName = strtok_r(NULL,messagePart, &messagePartsPtr);
         printf("Opening file: %s\n", fileName);
         char *filePath = malloc(strlen(fileName)+strlen(baseDir)+1+1);
         printf("The path: %s, The file: %s\n",baseDir,fileName);
         sprintf(filePath,"%s/%s",baseDir,fileName);
         printf("Opening file: %s\n", filePath);
         char *successMessage = "OK\n";
-        fp = fopen(filePath,"w+");
+        fp = fopen(filePath,"ab+");
         if (fp == NULL){
             perror("Error opening file");
             strerror_r(errno,errorBuffer,READ_SIZE);

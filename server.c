@@ -7,10 +7,10 @@
 #include <errno.h>
 #include "server.h"
 
+char *baseDir;
 
 int main(int argc, char *argv[]) {
     int portNum;
-    char *baseDir;
     if (argc != 5) {
         printf("Invalid # of arguments\n");
         return 1;
@@ -69,7 +69,8 @@ void *connectionHandler(void *incomingConnection) {
     printf("socket fd: %d\n", socketFd);
     int readSize;
     char readBuffer[READ_SIZE];
-    const char *text;
+    char errorBuffer[READ_SIZE];
+    char *text;
     int length;
     char *messagePart;
     char **messagePartsPtr;
@@ -77,7 +78,8 @@ void *connectionHandler(void *incomingConnection) {
     readSize = recv(socketFd, readBuffer, READ_SIZE, 0);
     printf("Number of bytes for message: %d\n", readSize);
     // "OPEN filename\n", "READ", "WRITE", "CLOSE"
-    if (strcmp(readBuffer[readSize - 1], "\n") != 0) { //malformed request
+    printf("Read buffer at last index %c:\n",readBuffer[readSize-1]);
+    if (readBuffer[readSize-1] != '\n') { //malformed request
         text = "Error, malformed request!";
         /* Write the string. */
         write(socketFd, text, strlen(text));
@@ -85,7 +87,9 @@ void *connectionHandler(void *incomingConnection) {
         printf("Malformed request: '%s'\n", readBuffer);
         return;
     }
+    puts("wat");
     messagePart = strtok_r(readBuffer, " ", messagePartsPtr);
+    puts("ok");
     //switch(messagePart){
     //    /* case "OPEN":
     //    //stuff
@@ -98,17 +102,35 @@ void *connectionHandler(void *incomingConnection) {
     //    break;
     //    */
     //    default:
-    // if (strcmp(messagePart, "OPEN") == 0){
-    //       // do something
-    //     FILE
-    //     return;
-    // }
-    // else{
-    text = "Error, unknown command: ";
-    /* Write the string. */
-    write(socketFd, text, strlen(text));
-    close(socketFd);
-    return;
-    // }
+    if (strcmp(messagePart, "OPEN") == 0){
+        FILE *fp;
+        puts("hi");
+        char *fileName = strtok_r(NULL,messagePart,messagePartsPtr);
+        printf("Opening file: %s\n", fileName);
+        char *filePath = malloc(strlen(fileName)+strlen(baseDir)+1+1);
+        printf("The path: %s, The file: %s\n",baseDir,fileName);
+        sprintf(filePath,"%s/%s",baseDir,fileName);
+        printf("Opening file: %s\n", filePath);
+        char *successMessage = "OK\n";
+        fp = fopen(filePath,"w+");
+        if (fp == NULL){
+            perror("Error opening file");
+            strerror_r(errno,errorBuffer,READ_SIZE);
+            write(socketFd, errorBuffer, strlen(errorBuffer));
+            close(socketFd);
+        }
+        else{
+            write(socketFd, successMessage, strlen(successMessage));
+            close(socketFd);
+            fclose(fp);
+        }
+        return;
+    }else{
+        sprintf(text, "Error, unknown command: %s\n", messagePart);
+        /* Write the string. */
+        write(socketFd, text, strlen(text));
+        close(socketFd);
+        return;
+    }
 
 }

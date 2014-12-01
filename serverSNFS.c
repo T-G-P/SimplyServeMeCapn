@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "server.h"
+#include "serverSNFS.h"
 
 char *baseDir;
 
@@ -127,6 +127,7 @@ void *connectionHandler(void *incomingConnection) {
         char *fdString = strtok_r(NULL, " ", &messagePartsPtr);
         fd = atoi(fdString);
         printf("wants to read fd %d\n", fd);
+        //puts("mother fucker\n");
 
         char *buf[READ_SIZE];
         ssize_t readBytes = read(fd, buf, READ_SIZE);
@@ -186,7 +187,7 @@ void *connectionHandler(void *incomingConnection) {
             strerror_r(errno, errorBuffer, sizeof(errorBuffer));
             sprintf(text, "Error, couldn't STAT file: %s", errorBuffer);
             write(socketFd, text, strlen(text));
-            //close(socketFd);
+            close(socketFd);
             return;
         }
 
@@ -223,7 +224,7 @@ void *connectionHandler(void *incomingConnection) {
             perror("Error closing file");
             strerror_r(errno, errorBuffer, READ_SIZE);
             write(socketFd, errorBuffer, strlen(errorBuffer));
-            //close(socketFd);
+            close(socketFd);
         }
         else {
             // success
@@ -237,7 +238,7 @@ void *connectionHandler(void *incomingConnection) {
         sprintf(text, "Error, unknown command: %s", messagePart);
         /* Write the string. */
         write(socketFd, text, strlen(text));
-        //close(socketFd);
+        close(socketFd);
         return;
     }
 

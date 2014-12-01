@@ -1,10 +1,10 @@
 all: SNFSclient SNFSserver
 
 SNFSserver:
-	gcc -g -pthread server.c -o SNFSserver
+	gcc -g -pthread serverSNFS.c -o SNFSserver
 
 SNFSclient:
-	gcc -g -lrt client.c client_lib.c -o SNFSclient
+	gcc -g -lrt clientapp.c clientSNFS.c -o SNFSclient
 
 clean:
 	rm -f SNFSclient SNFSserver portnum

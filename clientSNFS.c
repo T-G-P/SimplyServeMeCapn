@@ -12,9 +12,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "client.h"
-#include "client_lib.h"
+#include "clientSNFS.h"
 
 char *givenServerIP;
 int givenPort;
@@ -93,7 +91,7 @@ int openFile(char *name) {
 
     printf("<-%s\n", recvline);
 
-    close(socketDescriptor);
+    //close(socketDescriptor);
     puts("closed");
 
     if (strncmp(recvline, "OK", 2) == 0) {
@@ -145,7 +143,7 @@ int readFile(int fd, void *buf) {
 
     printf("<-'%s'\n", recvline);
 
-    close(socketDescriptor);
+    //close(socketDescriptor);
     puts("closed");
 
     char *filedata;
@@ -194,7 +192,7 @@ int writeFile(int fd, void *buf) {
 
     printf("<-'%s'\n", recvline);
 
-    close(socketDescriptor);
+    //close(socketDescriptor);
     puts("closed");
     char *filedata;
     // protocol: "OK <number of bytes written>"
@@ -287,7 +285,7 @@ int closeFile(int fd) {
     }
     printf("bytes read: %d\n", bytesRead);
     printf("<-'%s'\n", recvline);
-    close(socketDescriptor);
+    //close(socketDescriptor);
     puts("closed");
 
     if (strncmp(recvline, "OK", 2) == 0) {

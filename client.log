@@ -11,72 +11,31 @@ resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
-->OPEN reverse.in
-<-OK 8
-closed
-parse ip failed
-resolving hostname
-host resolved to: '16777343'
-ip: 16777343
-connected
-->READ 6
-bytes read: 3
-<-'OK '
-closed
-parse ip failed
-resolving hostname
-host resolved to: '16777343'
-ip: 16777343
-connected
-->WRITE 6 This is a test
+->WRITE 6 This is a buf
 bytes read: 5
-<-'OK 14'
+<-'OK 13'
 closed
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 ->STAT 6
-FROM CLIENT, statsize: 14
-FROM CLIENT, creationTime: 1417433915
-FROM CLIENT, accessTime: 1417433915
-FROM CLIENT, modificationTime: 14174339156
+FROM CLIENT, statsize: 13
+FROM CLIENT, creationTime: 1417438761
+FROM CLIENT, accessTime: 1417438761
+FROM CLIENT, modificationTime: 14174387616
+File Size: 13
+Creation Time: 1417438761
+Modifiction TIme: 14174387616
+Access Time: 1417438761
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
-->READ 8
-bytes read: 3
-<-'OK '
+->OPEN reverse.in
+<-OK 10
 closed
-parse ip failed
-resolving hostname
-host resolved to: '16777343'
-ip: 16777343
-connected
-->WRITE 8 test a is This
-bytes read: 5
-<-'OK 14'
-closed
-parse ip failed
-resolving hostname
-host resolved to: '16777343'
-ip: 16777343
-->STAT 8
-FROM CLIENT, statsize: 14
-FROM CLIENT, creationTime: 1417433915
-FROM CLIENT, accessTime: 1417433915
-FROM CLIENT, modificationTime: 14174339158
-File Size: 14
-Creation Time: 1417433915
-Modifiction TIme: 14174339156
-Access Time: 1417433915
-File Size: 14
-Creation Time: 1417433915
-Modifiction TIme: 14174339158
-Access Time: 1417433915
-read 2
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
@@ -86,6 +45,28 @@ connected
 bytes read: 3
 <-'OK '
 closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->WRITE 10 fub a si sihT
+bytes read: 5
+<-'OK 13'
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+->STAT 10
+FROM CLIENT, statsize: 13
+FROM CLIENT, creationTime: 1417438761
+FROM CLIENT, accessTime: 1417438761
+FROM CLIENT, modificationTime: 141743876110
+File Size: 13
+Creation Time: 1417438761
+Modifiction TIme: 141743876110
+Access Time: 1417438761
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
@@ -95,40 +76,12 @@ connected
 bytes read: 4
 <-'OK 6'
 closed
-read 3
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
-->READ 6
-bytes read: 46
-<-'Error, couldn't read file: Bad file descriptor'
-closed
-write
-parse ip failed
-resolving hostname
-host resolved to: '16777343'
-ip: 16777343
-connected
-->WRITE 6 
-bytes read: 4
-<-'OK 0'
-closed
-parse ip failed
-resolving hostname
-host resolved to: '16777343'
-ip: 16777343
-connected
-->CLOSE 8
-bytes read: 4
-<-'OK 8'
-closed
-parse ip failed
-resolving hostname
-host resolved to: '16777343'
-ip: 16777343
-connected
-->OPEN filename.in
-<-OK 19
+->CLOSE 10
+bytes read: 5
+<-'OK 10'
 closed

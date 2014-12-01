@@ -1,10 +1,14 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <sys/socket.h>
-#include <stdlib.h>
 #include <arpa/inet.h>
-#include <string.h>
+#include <assert.h>
 #include <errno.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "server.h"
 
 char *baseDir;
@@ -77,8 +81,9 @@ void *connectionHandler(void *incomingConnection) {
 
     readSize = recv(socketFd, readBuffer, READ_SIZE, 0);
     printf("Number of bytes for message: %d\n", readSize);
+    printf("readBuffer: %s\n", readBuffer);
     // "OPEN filename", "READ", "WRITE", "CLOSE"
-    printf("Read buffer at last index %c:\n", readBuffer[readSize - 1]);
+    // printf("Read buffer at last index %c:\n", readBuffer[readSize - 1]);
     // if (readBuffer[readSize - 1] != '\n') { //malformed request
     //     text = "Error, malformed request!";
     //     /* Write the string. */
@@ -141,10 +146,12 @@ void *connectionHandler(void *incomingConnection) {
         write(socketFd, message, strlen(message));
         close(socketFd);
         return;
-    } else if (strcmp(messagePart, "WRITE") == 0{
+    } else if (strcmp(messagePart, "WRITE") == 0) {
         int fd;
         char *fdString = strtok_r(NULL, " ", &messagePartsPtr);
-        char *writeBuffer = strtok_r(NULL, " ", &messagePartsPtr);
+        char *writeBuffer = readBuffer + strlen("WRITE ") + strlen(fdString) + strlen(" ");
+        // char *writeBuffer = strtok_r(NULL, " ", &messagePartsPtr);
+        printf("asked to write to fd %s the following data: %s\n", fdString, writeBuffer);
         char *buf[READ_SIZE];
         fd = atoi(fdString);
         ssize_t writeBytes = write(fd, writeBuffer, strlen(writeBuffer));
@@ -157,9 +164,43 @@ void *connectionHandler(void *incomingConnection) {
             close(socketFd);
             return;
         }
+        printf("wrote %d bytes to fd %d\n", writeBytes, fd);
+        char message[READ_SIZE];
+        sprintf(message, "OK %d", writeBytes);
+        write(socketFd, message, strlen(message));
+        close(socketFd);
+        return;
+    }else if (strcmp(messagePart, "STAT") == 0){
+        int fd;
+        char *fdString = strtok_r(NULL, " ", &messagePartsPtr);
+        //char *statBuffer = readBuffer + strlen("STAT ") + strlen(fdString) + strlen(" ");
+        fd = atoi(fdString);
+        //need to call fstat with fd and stat struct
+        struct stat *fstatBuffer = malloc(sizeof(struct stat));
+        // memcpy(fstatBuffer,statBuffer,sizeof(fstatBuffer));
 
-        char message[READ_SIZE + strlen("OK ")];
-        sprintf(message, "OK %s", buf);
+        int fstatResponse = fstat(fd, fstatBuffer);
+        if (fstatResponse == -1) {
+            perror("Couldn't STAT file");
+            char errorBuffer[1000];
+            strerror_r(errno, errorBuffer, sizeof(errorBuffer));
+            sprintf(text, "Error, couldn't STAT file: %s", errorBuffer);
+            write(socketFd, text, strlen(text));
+            close(socketFd);
+            return;
+        }
+
+        struct fileStat *fileStatBuffer = malloc(sizeof(struct fileStat));
+        fileStatBuffer->fileSize = fstatBuffer->st_size;
+        fileStatBuffer->creationTime = fstatBuffer->st_ctime;
+        fileStatBuffer->accessTime = fstatBuffer->st_atime;
+        fileStatBuffer->modificationTime = fstatBuffer->st_mtime;
+        char message[READ_SIZE];
+        //sprintf(message, "OK %s", fstatBuffer);
+        sprintf(message, "OK ");
+        assert(strlen("OK ") + sizeof(fstatBuffer) <= sizeof(message));
+        memcpy(message + strlen(message), fstatBuffer, sizeof(fstatBuffer));
+        // memcpy(message + READ_SIZE, fstatBuffer, sizeof(fstatBuffer));
         write(socketFd, message, strlen(message));
         close(socketFd);
         return;

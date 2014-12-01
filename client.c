@@ -42,10 +42,25 @@ int main(int argc, char **argv) {
         }
     }
     setServer(hostName, portNum);
-    int fd = openFile(".zshrc");
+    int fd = openFile("filename.in");
+
     // printf("got file descriptor: %d\n", fd);
     char *buf[2000];
+    char *writeBuf = "Testing writing of file..";
+    struct fileStat *fileBuffer = malloc(sizeof(struct fileStat));
+    // off_t fileSize;
+    // time_t creationTime;
+    // time_t accessTime;
+    // time_t modificationTime;
+
     readFile(fd, buf);
+    writeFile(fd, writeBuf);
+    statFile(fd, fileBuffer);
+
+    printf("File Size: %lld\n", (long long)fileBuffer->fileSize);
+    printf("Creation Time: %lld\n", (long long)fileBuffer->creationTime);
+    printf("Modifiction TIme: %lld\n", (long long)fileBuffer->modificationTime);
+    printf("Access Time: %lld\n", (long long)fileBuffer->accessTime);
     //openFile("/etc/shadow");
 
 }

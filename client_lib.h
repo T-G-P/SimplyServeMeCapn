@@ -1,11 +1,15 @@
 #ifndef client_lib_H
 #define client_lib_H
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 struct fileStat {
-    int fileSize;
-    int creationTime;
-    int accessTime;
-    int modificationTime;
+    off_t fileSize;
+    time_t creationTime;
+    time_t accessTime;
+    time_t modificationTime;
 };
 
 void setServer(char *serverIP, int port);

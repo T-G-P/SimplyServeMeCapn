@@ -10,6 +10,8 @@
 #include <sys/mman.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "client.h"
 #include "client_lib.h"
@@ -17,6 +19,8 @@
 char *givenServerIP;
 int givenPort;
 struct sockaddr_in serverAddress;
+
+const NETWORK_BUFFER_LENGTH = 2000;
 
 int connectToServer() {
     int connectSocket;
@@ -67,8 +71,8 @@ void setServer(char *serverIP, int port) {
 }
 
 int openFile(char *name) {
-    char recvline[1000];
-    char message[1000];
+    char recvline[NETWORK_BUFFER_LENGTH];
+    char message[NETWORK_BUFFER_LENGTH];
     int num_bytes;
     int socketDescriptor;
     int fd;
@@ -84,7 +88,7 @@ int openFile(char *name) {
     sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     printf("->%s\n", message);
 
-    num_bytes = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    num_bytes = recvfrom(socketDescriptor, recvline, NETWORK_BUFFER_LENGTH, 0, NULL, NULL);
     recvline[num_bytes] = 0;
 
     printf("<-%s\n", recvline);
@@ -108,9 +112,9 @@ int openFile(char *name) {
 int readFile(int fd, void *buf) {
     // Attempt store adthewholefilefromfiledescriptor fd into the buffer starting at buf. On success, the number of bytes read
     // is returned and -1 otherwise. You can assume file size will be less than 1KB.
-    char recvline[1000];
-    bzero(recvline, 1000);
-    char message[1000];
+    char recvline[NETWORK_BUFFER_LENGTH];
+    bzero(recvline, NETWORK_BUFFER_LENGTH);
+    char message[NETWORK_BUFFER_LENGTH];
     // int num_bytes;
     int socketDescriptor;
 
@@ -126,7 +130,7 @@ int readFile(int fd, void *buf) {
     sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     printf("->%s\n", message);
 
-    int bytesRead = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    int bytesRead = recvfrom(socketDescriptor, recvline, NETWORK_BUFFER_LENGTH, 0, NULL, NULL);
     if (bytesRead < 0) {
         perror("Failed to read from socket");
         exit(1);
@@ -136,7 +140,7 @@ int readFile(int fd, void *buf) {
         return -1;
     }
     printf("bytes read: %d\n", bytesRead);
-    // num_bytes = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    // num_bytes = recvfrom(socketDescriptor, recvline, NETWORK_BUFFER_LENGTH, 0, NULL, NULL);
     // recvline[num_bytes] = 0;
 
     printf("<-'%s'\n", recvline);
@@ -159,9 +163,9 @@ int readFile(int fd, void *buf) {
 }
 
 int writeFile(int fd, void *buf) {
-    char recvline[1000];
-    bzero(recvline, 1000);
-    char message[1000];
+    char recvline[NETWORK_BUFFER_LENGTH];
+    bzero(recvline, NETWORK_BUFFER_LENGTH);
+    char message[NETWORK_BUFFER_LENGTH];
     int socketDescriptor;
 
     socketDescriptor = connectToServer();
@@ -170,12 +174,12 @@ int writeFile(int fd, void *buf) {
     }
     puts("connected");
 
-    sprintf(message, "WRITE %d", fd);
+    sprintf(message, "WRITE %d %s", fd, buf);
     
     sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     printf("->%s\n", message);
 
-    int bytesRead = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    int bytesRead = recvfrom(socketDescriptor, recvline, NETWORK_BUFFER_LENGTH, 0, NULL, NULL);
     if (bytesRead < 0) {
         perror("Failed to read from socket");
         exit(1);
@@ -185,21 +189,74 @@ int writeFile(int fd, void *buf) {
         return -1;
     }
     printf("bytes read: %d\n", bytesRead);
-    // num_bytes = recvfrom(socketDescriptor, recvline, 10000, 0, NULL, NULL);
+    // num_bytes = recvfrom(socketDescriptor, recvline, NETWORK_BUFFER_LENGTH, 0, NULL, NULL);
     // recvline[num_bytes] = 0;
 
     printf("<-'%s'\n", recvline);
 
     close(socketDescriptor);
     puts("closed");
-
+    char *filedata;
+    // protocol: "OK <number of bytes written>"
+    if (strncmp(recvline, "OK", 2) == 0) {
+        // ok
+        char *bytesWritten = recvline + strlen("OK ");
+        //replace with bytes read
+        return atoi(bytesWritten);
+    } else {
+        // error
+        return -1;
+    }
 }
 
 int statFile(int fd, struct fileStat *buf) {
+    int socketDescriptor = connectToServer();
+    if (socketDescriptor == -1) {
+        return -1;
+    }
 
+    char request[NETWORK_BUFFER_LENGTH];
+    sprintf(request, "STAT %d", fd);
+
+    write(socketDescriptor, request, strlen(request));
+    printf("->%s\n", request);
+
+    char response[NETWORK_BUFFER_LENGTH];
+    int bytesRead = recvfrom(socketDescriptor, response, NETWORK_BUFFER_LENGTH, 0, NULL, NULL);
+    if (bytesRead == -1) {
+        perror("Failed to read from socket");
+        return -1;
+    } else if (bytesRead == 0) {
+        puts("weird, got a zero length read");
+        return -1;
+    }
+
+    if (strncmp("OK", response, 2) != 0) {
+        puts("STAT request failed");
+        return -1;
+    }
+    
+    char *statDataString = response + strlen("OK ");
+    printf("got statData: %s\n", statDataString);
+
+    if (bytesRead != strlen("OK ") + sizeof(buf)) {
+        // TODO: invalid response
+
+        return -1;
+    }
+    if (strncmp(response, "OK", 2) == 0) {
+
+        memcpy(buf, statDataString, sizeof(buf));
+        return 0;
+
+    } else {
+        // error
+        return -1;
+    }
+    
+    return 0;
 }
 
 int closeFile(int fd) {
 
 }
-

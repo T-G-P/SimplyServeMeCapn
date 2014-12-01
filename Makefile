@@ -17,8 +17,7 @@ test: clean all
 	@cat portnum
 	@echo ------- starting server -------
 	@rm server.log || true
-	# bash -c './SNFSserver -port `cat portnum` -mount `mktemp -d` &> server.log &'
-	bash -c './SNFSserver -port `cat portnum` -mount /home/vith &> server.log &'
+	bash -c './SNFSserver -port `cat portnum` -mount `mktemp -d` &> server.log &'
 	@echo 'sleeping...'
 	@bash -c 'sleep 1'
 	@echo ------- starting client -------
@@ -35,8 +34,7 @@ testserver: clean all
 	@rm client.log || true
 	bash -c 'sleep 1 && ./SNFSclient -host localhost -port `cat portnum` > client.log' &
 	@echo ------- starting server -------
-	bash -c './SNFSserver -port `cat portnum` -mount /home/vith'
-	# bash -c './SNFSserver -port `cat portnum` -mount `mktemp -d`'
+	bash -c './SNFSserver -port `cat portnum` -mount `mktemp -d`'
 	@echo 'sleeping...'
 	@bash -c 'sleep 1'
 

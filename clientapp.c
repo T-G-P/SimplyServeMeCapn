@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     }
     setServer(hostName, portNum);
    //int fd2 = openFile("/etc/shadow");
-    //int fd3 = openFile("filename.in");
+   //int fd3 = openFile("filename.in");
 
     // printf("got file descriptor: %d\n", fd);
     char *buf[2000];
@@ -77,10 +77,10 @@ int main(int argc, char **argv) {
     closeFile(fd);
     closeFile(fd2);
 
-    //readFile(fd2, buf2);
+    readFile(fd2, buf);
 
     //readFile(fd2, buf);
-    //writeFile(fd2, writeBuf);
+    writeFile(fd2, writeBuf);
     //statFile(fd2, fileBuffer);
 
     //readFile(fd3, buf);

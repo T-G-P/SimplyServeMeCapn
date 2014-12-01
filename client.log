@@ -21,16 +21,16 @@ host resolved to: '16777343'
 ip: 16777343
 ->STAT 6
 File Size: 13
-Creation Time: 1417439326
-Modifiction TIme: 14174393266
-Access Time: 1417439326
+Creation Time: 1417440139
+Modifiction TIme: 14174401396
+Access Time: 1417440139
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
 ->OPEN reverse.in
-<-OK 10
+<-OK 7
 closed
 parse ip failed
 resolving hostname
@@ -46,7 +46,7 @@ resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
-->WRITE 10 fub a si sihT
+->WRITE 7 fub a si sihT
 bytes read: 5
 <-'OK 13'
 closed
@@ -54,11 +54,11 @@ parse ip failed
 resolving hostname
 host resolved to: '16777343'
 ip: 16777343
-->STAT 10
+->STAT 7
 File Size: 13
-Creation Time: 1417439326
-Modifiction TIme: 141743932610
-Access Time: 1417439326
+Creation Time: 1417440139
+Modifiction TIme: 14174401397
+Access Time: 1417440139
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
@@ -73,7 +73,25 @@ resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
-->CLOSE 10
-bytes read: 5
-<-'OK 10'
+->CLOSE 7
+bytes read: 4
+<-'OK 7'
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->READ 7
+bytes read: 46
+<-'Error, couldn't read file: Bad file descriptor'
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->WRITE 7 This is a buf
+bytes read: 47
+<-'Error, couldn't write file: Bad file descriptor'
 closed

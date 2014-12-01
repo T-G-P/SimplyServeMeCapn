@@ -43,21 +43,24 @@ int main(int argc, char **argv) {
     }
     setServer(hostName, portNum);
     int fd = openFile("filename.in");
+    int fd2 = openFile("reverse.in");
     //int fd2 = openFile("/etc/shadow");
     //int fd3 = openFile("filename.in");
 
     // printf("got file descriptor: %d\n", fd);
     char *buf[2000];
-    char *writeBuf = "Testing writing of file..";
+    char *writeBuf = "This is a test";
+    char *reversewriteBuf = "test a is This";
     struct fileStat *fileBuffer = malloc(sizeof(struct fileStat));
-    // off_t fileSize;
-    // time_t creationTime;
-    // time_t accessTime;
-    // time_t modificationTime;
+    struct fileStat *fileBuffer2 = malloc(sizeof(struct fileStat));
 
     readFile(fd, buf);
     writeFile(fd, writeBuf);
     statFile(fd, fileBuffer);
+
+    readFile(fd2, buf);
+    writeFile(fd2, reversewriteBuf);
+    statFile(fd2, fileBuffer2);
 
     //readFile(fd2, buf);
     //writeFile(fd2, writeBuf);
@@ -71,8 +74,20 @@ int main(int argc, char **argv) {
     printf("Creation Time: %lld\n", (long long)fileBuffer->creationTime);
     printf("Modifiction TIme: %lld\n", (long long)fileBuffer->modificationTime);
     printf("Access Time: %lld\n", (long long)fileBuffer->accessTime);
+
+    printf("File Size: %lld\n", (long long)fileBuffer2->fileSize);
+    printf("Creation Time: %lld\n", (long long)fileBuffer2->creationTime);
+    printf("Modifiction TIme: %lld\n", (long long)fileBuffer2->modificationTime);
+    printf("Access Time: %lld\n", (long long)fileBuffer2->accessTime);
     //openFile("/etc/shadow");
-    closeFile(fd);
+    puts("read 2");
     readFile(fd, buf);
+    closeFile(fd);
+    puts("read 3");
+    readFile(fd, buf);
+    puts("write");
+    writeFile(fd,buf);
+    closeFile(fd2);
+    openFile("filename.in");
 }
 

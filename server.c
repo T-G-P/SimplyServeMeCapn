@@ -111,14 +111,14 @@ void *connectionHandler(void *incomingConnection) {
             perror("Error opening file");
             strerror_r(errno, errorBuffer, READ_SIZE);
             write(socketFd, errorBuffer, strlen(errorBuffer));
-            close(socketFd);
+            //close(socketFd);
         }
         else {
             // success
             fd = fileno(fp);
             sprintf(successMessage, "OK %d", fd);
             write(socketFd, successMessage, strlen(successMessage));
-            close(socketFd);
+            //close(socketFd);
             // fclose(fp);
         }
         return;
@@ -136,7 +136,7 @@ void *connectionHandler(void *incomingConnection) {
             strerror_r(errno, errorBuffer, sizeof(errorBuffer));
             sprintf(text, "Error, couldn't read file: %s", errorBuffer);
             write(socketFd, text, strlen(text));
-            close(socketFd);
+            //close(socketFd);
             return;
         }
         printf("read %d bytes from fd %d\n", (int) readBytes, fd);
@@ -144,7 +144,7 @@ void *connectionHandler(void *incomingConnection) {
         char message[READ_SIZE + strlen("OK ")];
         sprintf(message, "OK %s", buf);
         write(socketFd, message, strlen(message));
-        close(socketFd);
+        //close(socketFd);
         return;
     } else if (strcmp(messagePart, "WRITE") == 0) {
         int fd;
@@ -161,14 +161,14 @@ void *connectionHandler(void *incomingConnection) {
             strerror_r(errno, errorBuffer, sizeof(errorBuffer));
             sprintf(text, "Error, couldn't write file: %s", errorBuffer);
             write(socketFd, text, strlen(text));
-            close(socketFd);
+            //close(socketFd);
             return;
         }
         printf("wrote %d bytes to fd %d\n", writeBytes, fd);
         char message[READ_SIZE];
         sprintf(message, "OK %d", writeBytes);
         write(socketFd, message, strlen(message));
-        close(socketFd);
+        //close(socketFd);
         return;
     }else if (strcmp(messagePart, "STAT") == 0){
         int fd;
@@ -186,7 +186,7 @@ void *connectionHandler(void *incomingConnection) {
             strerror_r(errno, errorBuffer, sizeof(errorBuffer));
             sprintf(text, "Error, couldn't STAT file: %s", errorBuffer);
             write(socketFd, text, strlen(text));
-            close(socketFd);
+            //close(socketFd);
             return;
         }
 
@@ -208,7 +208,7 @@ void *connectionHandler(void *incomingConnection) {
         // memcpy(message + READ_SIZE, fstatBuffer, sizeof(fstatBuffer));
         puts(message);
         write(socketFd, message, strlen(message));
-        close(socketFd);
+        //close(socketFd);
         return;
 
     }else if (strcmp(messagePart, "CLOSE") == 0) {
@@ -223,13 +223,13 @@ void *connectionHandler(void *incomingConnection) {
             perror("Error closing file");
             strerror_r(errno, errorBuffer, READ_SIZE);
             write(socketFd, errorBuffer, strlen(errorBuffer));
-            close(socketFd);
+            //close(socketFd);
         }
         else {
             // success
             sprintf(successMessage, "OK %d", fd);
             write(socketFd, successMessage, strlen(successMessage));
-            close(socketFd);
+          //  close(socketFd);
             // fclose(fp);
         }
         return;
@@ -237,7 +237,7 @@ void *connectionHandler(void *incomingConnection) {
         sprintf(text, "Error, unknown command: %s", messagePart);
         /* Write the string. */
         write(socketFd, text, strlen(text));
-        close(socketFd);
+        //close(socketFd);
         return;
     }
 

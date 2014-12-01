@@ -11,6 +11,14 @@ resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
+->OPEN reverse.in
+<-OK 8
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
 ->READ 6
 bytes read: 3
 <-'OK '
@@ -20,25 +28,64 @@ resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
-->WRITE 6 Testing writing of file..
+->WRITE 6 This is a test
 bytes read: 5
-<-'OK 25'
+<-'OK 14'
 closed
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 ->STAT 6
-This is the response: OK 25 1417431823 1417431823 14174318236 Testing writing Àû–pÿ
-got statData: 25 1417431823 1417431823 14174318236 Testing writing Àû–pÿ
-FROM CLIENT, statsize: 25
-FROM CLIENT, creationTime: 1417431823
-FROM CLIENT, accessTime: 1417431823
-FROM CLIENT, modificationTime: 14174318236
-File Size: 25
-Creation Time: 1417431823
-Modifiction TIme: 14174318236
-Access Time: 1417431823
+FROM CLIENT, statsize: 14
+FROM CLIENT, creationTime: 1417433915
+FROM CLIENT, accessTime: 1417433915
+FROM CLIENT, modificationTime: 14174339156
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->READ 8
+bytes read: 3
+<-'OK '
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->WRITE 8 test a is This
+bytes read: 5
+<-'OK 14'
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+->STAT 8
+FROM CLIENT, statsize: 14
+FROM CLIENT, creationTime: 1417433915
+FROM CLIENT, accessTime: 1417433915
+FROM CLIENT, modificationTime: 14174339158
+File Size: 14
+Creation Time: 1417433915
+Modifiction TIme: 14174339156
+Access Time: 1417433915
+File Size: 14
+Creation Time: 1417433915
+Modifiction TIme: 14174339158
+Access Time: 1417433915
+read 2
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->READ 6
+bytes read: 3
+<-'OK '
+closed
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
@@ -48,12 +95,40 @@ connected
 bytes read: 4
 <-'OK 6'
 closed
+read 3
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
 ->READ 6
-bytes read: 3
-<-'OK '
+bytes read: 46
+<-'Error, couldn't read file: Bad file descriptor'
+closed
+write
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->WRITE 6 
+bytes read: 4
+<-'OK 0'
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->CLOSE 8
+bytes read: 4
+<-'OK 8'
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->OPEN filename.in
+<-OK 19
 closed

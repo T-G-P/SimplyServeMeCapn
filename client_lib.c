@@ -235,16 +235,9 @@ int statFile(int fd, struct fileStat *buf) {
         puts("STAT request failed");
         return -1;
     }
-    printf("This is the response: %s\n",response);
 
     char *statDataString = response + strlen("OK ");
-    printf("got statData: %s\n", statDataString);
 
-    //if (bytesRead != strlen("OK ") + sizeof(buf)) {
-    //    // TODO: invalid response
-
-    //    return -1;
-    //}
     if (strncmp(response, "OK", 2) == 0) {
 
         //memcpy(buf, statDataString, sizeof(buf));

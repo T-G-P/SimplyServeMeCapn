@@ -217,8 +217,9 @@ void *connectionHandler(void *incomingConnection) {
         char *fdString = strtok_r(NULL, " ", &messagePartsPtr);
         //char *statBuffer = readBuffer + strlen("STAT ") + strlen(fdString) + strlen(" ");
         fd = atoi(fdString);
+        int closedFile = close(fd);
         char successMessage[2048];
-        if (fd == -1) {
+        if (closedFile == -1) {
             perror("Error closing file");
             strerror_r(errno, errorBuffer, READ_SIZE);
             write(socketFd, errorBuffer, strlen(errorBuffer));

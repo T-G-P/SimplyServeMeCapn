@@ -267,4 +267,40 @@ int statFile(int fd, struct fileStat *buf) {
 }
 
 int closeFile(int fd) {
+    char recvline[NETWORK_BUFFER_LENGTH];
+    bzero(recvline, NETWORK_BUFFER_LENGTH);
+    char message[NETWORK_BUFFER_LENGTH];
+    int socketDescriptor;
+
+    socketDescriptor = connectToServer();
+    if (socketDescriptor == -1) {
+        return -1;
+    }
+
+    puts("connected");
+
+    sprintf(message, "CLOSE %d", fd);
+    sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+    printf("->%s\n", message);
+
+    int bytesRead = recvfrom(socketDescriptor, recvline, NETWORK_BUFFER_LENGTH, 0, NULL, NULL);
+    if (bytesRead < 0) {
+        perror("Failed to read from socket");
+        exit(1);
+    }
+    if (bytesRead == 0) {
+        puts("got a zero length read, weird");
+        return -1;
+    }
+    printf("bytes read: %d\n", bytesRead);
+    printf("<-'%s'\n", recvline);
+    close(socketDescriptor);
+    puts("closed");
+
+    if (strncmp(recvline, "OK", 2) == 0) {
+        return 0;
+    } else {
+        puts("Malformed response");
+        return -1;
+    }
 }

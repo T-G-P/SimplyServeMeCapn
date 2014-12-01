@@ -3,16 +3,57 @@ resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
-->OPEN os-release
-<-Permission denied
+->OPEN filename.in
+<-OK 6
 closed
-Malformed response
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 connected
-->READ -1
-bytes read: 19
-<-'Bad file descriptor'
+->READ 6
+bytes read: 3
+<-'OK '
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->WRITE 6 Testing writing of file..
+bytes read: 5
+<-'OK 25'
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+->STAT 6
+This is the response: OK 25 1417431823 1417431823 14174318236 Testing writing Àû–pÿ
+got statData: 25 1417431823 1417431823 14174318236 Testing writing Àû–pÿ
+FROM CLIENT, statsize: 25
+FROM CLIENT, creationTime: 1417431823
+FROM CLIENT, accessTime: 1417431823
+FROM CLIENT, modificationTime: 14174318236
+File Size: 25
+Creation Time: 1417431823
+Modifiction TIme: 14174318236
+Access Time: 1417431823
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->CLOSE 6
+bytes read: 4
+<-'OK 6'
+closed
+parse ip failed
+resolving hostname
+host resolved to: '16777343'
+ip: 16777343
+connected
+->READ 6
+bytes read: 3
+<-'OK '
 closed

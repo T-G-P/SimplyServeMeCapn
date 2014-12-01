@@ -43,6 +43,8 @@ int main(int argc, char **argv) {
     }
     setServer(hostName, portNum);
     int fd = openFile("filename.in");
+    //int fd2 = openFile("/etc/shadow");
+    //int fd3 = openFile("filename.in");
 
     // printf("got file descriptor: %d\n", fd);
     char *buf[2000];
@@ -57,11 +59,20 @@ int main(int argc, char **argv) {
     writeFile(fd, writeBuf);
     statFile(fd, fileBuffer);
 
+    //readFile(fd2, buf);
+    //writeFile(fd2, writeBuf);
+    //statFile(fd2, fileBuffer);
+
+    //readFile(fd3, buf);
+    //writeFile(fd3, writeBuf);
+    //statFile(fd3, fileBuffer);
+
     printf("File Size: %lld\n", (long long)fileBuffer->fileSize);
     printf("Creation Time: %lld\n", (long long)fileBuffer->creationTime);
     printf("Modifiction TIme: %lld\n", (long long)fileBuffer->modificationTime);
     printf("Access Time: %lld\n", (long long)fileBuffer->accessTime);
     //openFile("/etc/shadow");
-
+    closeFile(fd);
+    readFile(fd, buf);
 }
 

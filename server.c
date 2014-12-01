@@ -211,6 +211,27 @@ void *connectionHandler(void *incomingConnection) {
         close(socketFd);
         return;
 
+    }else if (strcmp(messagePart, "CLOSE") == 0) {
+        puts("want to close file");
+        int fd;
+        char *fdString = strtok_r(NULL, " ", &messagePartsPtr);
+        //char *statBuffer = readBuffer + strlen("STAT ") + strlen(fdString) + strlen(" ");
+        fd = atoi(fdString);
+        char successMessage[2048];
+        if (fd == -1) {
+            perror("Error closing file");
+            strerror_r(errno, errorBuffer, READ_SIZE);
+            write(socketFd, errorBuffer, strlen(errorBuffer));
+            close(socketFd);
+        }
+        else {
+            // success
+            sprintf(successMessage, "OK %d", fd);
+            write(socketFd, successMessage, strlen(successMessage));
+            close(socketFd);
+            // fclose(fp);
+        }
+        return;
     } else {
         sprintf(text, "Error, unknown command: %s", messagePart);
         /* Write the string. */

@@ -1,0 +1,6 @@
+In order to compile, just run make. This will produce a SNFSclient and SNFSserver binary. The server is run with ./serverSNFS -port <port> -mount <mountpoint>. The client is run with ./clientSNFS <server> <port> <filename>.
+
+To speed things up, there is a rule that will compile and run all of the necessary binaries with a random port and file path. If you would like to run this, simply run make testserver
+
+
+

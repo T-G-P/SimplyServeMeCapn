@@ -91,6 +91,15 @@ void *connectionHandler(void *incomingConnection) {
     //     printf("Malformed request: '%s'\n", readBuffer);
     //     return;
     // }
+    if(readSize == -1){
+        perror("Couldn't recieve file");
+        char errorBuffer[1000];
+        strerror_r(errno, errorBuffer, sizeof(errorBuffer));
+        sprintf(text, "Error, couldn't read file: %s", errorBuffer);
+        write(socketFd, text, strlen(text));
+        close(socketFd);
+        return;
+    }
 
     messagePart = strtok_r(readBuffer, " ", &messagePartsPtr);
 

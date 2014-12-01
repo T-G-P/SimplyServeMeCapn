@@ -143,7 +143,7 @@ int readFile(int fd, void *buf) {
 
     printf("<-'%s'\n", recvline);
 
-    //close(socketDescriptor);
+    close(socketDescriptor);
     puts("closed");
 
     char *filedata;
@@ -192,7 +192,7 @@ int writeFile(int fd, void *buf) {
 
     printf("<-'%s'\n", recvline);
 
-    //close(socketDescriptor);
+    close(socketDescriptor);
     puts("closed");
     char *filedata;
     // protocol: "OK <number of bytes written>"
@@ -285,7 +285,7 @@ int closeFile(int fd) {
     }
     printf("bytes read: %d\n", bytesRead);
     printf("<-'%s'\n", recvline);
-    //close(socketDescriptor);
+    close(socketDescriptor);
     puts("closed");
 
     if (strncmp(recvline, "OK", 2) == 0) {

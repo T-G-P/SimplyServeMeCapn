@@ -243,10 +243,10 @@ int statFile(int fd, struct fileStat *buf) {
         buf->creationTime = atoll(strtok(NULL," "));
         buf->accessTime = atoll(strtok(NULL," "));
         buf->modificationTime = atoll(strtok(NULL," "));
-        printf("FROM CLIENT, statsize: %lld\n",buf->fileSize);
-        printf("FROM CLIENT, creationTime: %lld\n",buf->creationTime);
-        printf("FROM CLIENT, accessTime: %lld\n",buf->accessTime);
-        printf("FROM CLIENT, modificationTime: %lld\n",buf->modificationTime);
+        //printf("FROM CLIENT, statsize: %lld\n",buf->fileSize);
+        //printf("FROM CLIENT, creationTime: %lld\n",buf->creationTime);
+        //printf("FROM CLIENT, accessTime: %lld\n",buf->accessTime);
+        //printf("FROM CLIENT, modificationTime: %lld\n",buf->modificationTime);
         return 0;
 
     } else {

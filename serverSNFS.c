@@ -81,7 +81,6 @@ void *connectionHandler(void *incomingConnection) {
 
     readSize = recv(socketFd, readBuffer, READ_SIZE, 0);
     printf("Number of bytes for message: %d\n", readSize);
-    printf("readBuffer: %s\n", readBuffer);
     // "OPEN filename", "READ", "WRITE", "CLOSE"
     // printf("Read buffer at last index %c:\n", readBuffer[readSize - 1]);
     // if (readBuffer[readSize - 1] != '\n') { //malformed request
@@ -94,7 +93,6 @@ void *connectionHandler(void *incomingConnection) {
     // }
 
     messagePart = strtok_r(readBuffer, " ", &messagePartsPtr);
-    printf("Message part: %s\n", messagePart);
 
     if (strcmp(messagePart, "OPEN") == 0) {
         FILE *fp;
@@ -102,7 +100,6 @@ void *connectionHandler(void *incomingConnection) {
         char *fileName = strtok_r(NULL, messagePart, &messagePartsPtr);
         printf("Opening file: %s\n", fileName);
         char *filePath = malloc(strlen(fileName) + strlen(baseDir) + 1 + 1);
-        printf("The path: %s, The file: %s\n", baseDir, fileName);
         sprintf(filePath, "%s/%s", baseDir, fileName);
         printf("Opening file: %s\n", filePath);
         char successMessage[2048];
@@ -126,7 +123,6 @@ void *connectionHandler(void *incomingConnection) {
         int fd;
         char *fdString = strtok_r(NULL, " ", &messagePartsPtr);
         fd = atoi(fdString);
-        printf("wants to read fd %d\n", fd);
         //puts("mother fucker\n");
 
         char *buf[READ_SIZE];
@@ -152,7 +148,6 @@ void *connectionHandler(void *incomingConnection) {
         char *fdString = strtok_r(NULL, " ", &messagePartsPtr);
         char *writeBuffer = readBuffer + strlen("WRITE ") + strlen(fdString) + strlen(" ");
         // char *writeBuffer = strtok_r(NULL, " ", &messagePartsPtr);
-        printf("asked to write to fd %s the following data: %s\n", fdString, writeBuffer);
         char *buf[READ_SIZE];
         fd = atoi(fdString);
         ssize_t writeBytes = write(fd, writeBuffer, strlen(writeBuffer));
@@ -213,7 +208,7 @@ void *connectionHandler(void *incomingConnection) {
         return;
 
     }else if (strcmp(messagePart, "CLOSE") == 0) {
-        puts("want to close file");
+        puts("Closing file");
         int fd;
         char *fdString = strtok_r(NULL, " ", &messagePartsPtr);
         //char *statBuffer = readBuffer + strlen("STAT ") + strlen(fdString) + strlen(" ");
@@ -231,9 +226,9 @@ void *connectionHandler(void *incomingConnection) {
             sprintf(successMessage, "OK %d", fd);
             write(socketFd, successMessage, strlen(successMessage));
           //  close(socketFd);
-            // fclose(fp);
         }
         return;
+
     } else {
         sprintf(text, "Error, unknown command: %s", messagePart);
         /* Write the string. */
@@ -241,5 +236,4 @@ void *connectionHandler(void *incomingConnection) {
         close(socketFd);
         return;
     }
-
 }

@@ -20,14 +20,10 @@ resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 ->STAT 6
-FROM CLIENT, statsize: 13
-FROM CLIENT, creationTime: 1417438761
-FROM CLIENT, accessTime: 1417438761
-FROM CLIENT, modificationTime: 14174387616
 File Size: 13
-Creation Time: 1417438761
-Modifiction TIme: 14174387616
-Access Time: 1417438761
+Creation Time: 1417439326
+Modifiction TIme: 14174393266
+Access Time: 1417439326
 parse ip failed
 resolving hostname
 host resolved to: '16777343'
@@ -59,14 +55,10 @@ resolving hostname
 host resolved to: '16777343'
 ip: 16777343
 ->STAT 10
-FROM CLIENT, statsize: 13
-FROM CLIENT, creationTime: 1417438761
-FROM CLIENT, accessTime: 1417438761
-FROM CLIENT, modificationTime: 141743876110
 File Size: 13
-Creation Time: 1417438761
-Modifiction TIme: 141743876110
-Access Time: 1417438761
+Creation Time: 1417439326
+Modifiction TIme: 141743932610
+Access Time: 1417439326
 parse ip failed
 resolving hostname
 host resolved to: '16777343'

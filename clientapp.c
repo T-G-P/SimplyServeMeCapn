@@ -7,18 +7,6 @@
 #include <errno.h>
 #include "clientSNFS.h"
 
-/*
-• It should take the server IP, the server port and a valid file name as argument.
-• Call setServer with the server information.
-• Open a file named "file.in" using openFile() API.
-• Copy the content of the file that is taken as argument, into the file "file.in" using writeFile().
-• Using statFile() print information of "file.in"
-• Open another file "reverse.in".
-• Read the content of the file "file.in" using readFile() API.
-• Copy the content of the file "file.in" in reverse order into the file "reverse.in".
-• Using statFile() print information of "reverse.in".
-• Close the files.
-*/
 char *reverseBuf(char *buf){
     int i,j=0;
     char *str = (char *)malloc(strlen(buf));

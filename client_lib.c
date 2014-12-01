@@ -126,7 +126,7 @@ int readFile(int fd, void *buf) {
     puts("connected");
 
     sprintf(message, "READ %d", fd);
-    
+
     sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     printf("->%s\n", message);
 
@@ -175,7 +175,7 @@ int writeFile(int fd, void *buf) {
     puts("connected");
 
     sprintf(message, "WRITE %d %s", fd, buf);
-    
+
     sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     printf("->%s\n", message);
 
@@ -235,28 +235,36 @@ int statFile(int fd, struct fileStat *buf) {
         puts("STAT request failed");
         return -1;
     }
-    
+    printf("This is the response: %s\n",response);
+
     char *statDataString = response + strlen("OK ");
     printf("got statData: %s\n", statDataString);
 
-    if (bytesRead != strlen("OK ") + sizeof(buf)) {
-        // TODO: invalid response
+    //if (bytesRead != strlen("OK ") + sizeof(buf)) {
+    //    // TODO: invalid response
 
-        return -1;
-    }
+    //    return -1;
+    //}
     if (strncmp(response, "OK", 2) == 0) {
 
-        memcpy(buf, statDataString, sizeof(buf));
+        //memcpy(buf, statDataString, sizeof(buf));
+        buf->fileSize = atoll(strtok(statDataString," "));
+        buf->creationTime = atoll(strtok(NULL," "));
+        buf->accessTime = atoll(strtok(NULL," "));
+        buf->modificationTime = atoll(strtok(NULL," "));
+        printf("FROM CLIENT, statsize: %lld\n",buf->fileSize);
+        printf("FROM CLIENT, creationTime: %lld\n",buf->creationTime);
+        printf("FROM CLIENT, accessTime: %lld\n",buf->accessTime);
+        printf("FROM CLIENT, modificationTime: %lld\n",buf->modificationTime);
         return 0;
 
     } else {
         // error
         return -1;
     }
-    
+
     return 0;
 }
 
 int closeFile(int fd) {
-
 }

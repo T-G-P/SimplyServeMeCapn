@@ -192,15 +192,21 @@ void *connectionHandler(void *incomingConnection) {
 
         struct fileStat *fileStatBuffer = malloc(sizeof(struct fileStat));
         fileStatBuffer->fileSize = fstatBuffer->st_size;
+        printf("The size of the file: %lld\n",fstatBuffer->st_size);
+        long long fileSize = fstatBuffer->st_size;
         fileStatBuffer->creationTime = fstatBuffer->st_ctime;
+        printf("The creation time of the file: %lld\n",fstatBuffer->st_ctime);
         fileStatBuffer->accessTime = fstatBuffer->st_atime;
+        printf("The access time of the file: %lld\n",fstatBuffer->st_atime);
         fileStatBuffer->modificationTime = fstatBuffer->st_mtime;
+        printf("The modification time of the file: %lld\n",fstatBuffer->st_mtime);
         char message[READ_SIZE];
         //sprintf(message, "OK %s", fstatBuffer);
-        sprintf(message, "OK ");
-        assert(strlen("OK ") + sizeof(fstatBuffer) <= sizeof(message));
-        memcpy(message + strlen(message), fstatBuffer, sizeof(fstatBuffer));
+        sprintf(message, "OK %lld %lld %lld %lld",fstatBuffer->st_size,fstatBuffer->st_ctime,fstatBuffer->st_atime,fstatBuffer->st_mtime);
+        //assert(strlen("OK ") + sizeof(fstatBuffer) <= sizeof(message));
+        //memcpy(message + strlen(message), fstatBuffer, sizeof(fstatBuffer));
         // memcpy(message + READ_SIZE, fstatBuffer, sizeof(fstatBuffer));
+        puts(message);
         write(socketFd, message, strlen(message));
         close(socketFd);
         return;

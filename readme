@@ -1,3 +1,18 @@
+This is a simple network client/server written in C. The server waits for the client to send requests.
+
+The requests are as follows:
+OPEN, READ, WRITE, STAT, CLOSE
+
+The client passes in a filename to OPEN and the server returns the file descriptor associated with it.
+
+READ then uses this file descriptor to view the file.
+
+WRITE writes to the file using the file descriptor from open
+
+STAT calls the fstat() function and populates a custom struct with file statistics such as modification time, creation time, file size.
+
+CLOSE closes the file using the same file descriptor.
+
 In order to compile, just run make. This will produce a SNFSclient and SNFSserver binary. The server is run with ./serverSNFS -port <port> -mount <mountpoint>. The client is run with ./clientSNFS <server> <port> <filename>.
 
 To speed things up, there is a rule that will compile and run all of the necessary binaries with a random port and file path. If you would like to run this, simply run make testserver
